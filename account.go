@@ -26,7 +26,7 @@ func (b *BankAccount) Init(number string) error {
 		if v >= '0' && v <= '9' {
 			b.AccountNumber[15+i] = int(v - '0')
 		}
-	}	
+	}
 
 	return nil
 }
@@ -83,7 +83,7 @@ func (b *BankAccount) IsValid() bool {
 		return false
 	}
 
-	mod := Modulo(b.GetBank())
+	mod := BankModulo(b.GetBank())
 	var cumulative int
 
 	for i, n := range CheckDigitWeighting(b.GetBank(), b.GetAccount()) {
@@ -93,7 +93,7 @@ func (b *BankAccount) IsValid() bool {
 	return cumulative % mod == 0
 }
 func (b *BankAccount) IsValidBranch() bool {
-	bank, found := Banks()[b.GetBank()]
+	bank, found := Banks[b.GetBank()]
 
 	if !found {
 		return false

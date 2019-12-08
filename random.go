@@ -6,16 +6,14 @@ import (
 )
 
 func RandomBank(bankCode int) BankAccount {
-	banks := Banks()
 	var bank Bank
-
 	if bankCode > 0 {
-		bank = banks[bankCode]
+		bank = Banks[bankCode]
 	} else {
 		rand.Seed(time.Now().UTC().UnixNano())
-		ind := rand.Intn(len(banks) - 1)
+		ind := rand.Intn(len(Banks) - 1)
 		count := 0
-		for _, v := range banks {
+		for _, v := range Banks {
 			if count == ind {
 				bank = v
 				break
@@ -28,14 +26,18 @@ func RandomBank(bankCode int) BankAccount {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 	branch := rand.Intn(first.Max - first.Min) + first.Min
+
 	rand.Seed(time.Now().UTC().UnixNano())
 	account := rand.Intn(99999999 - 990000) + 990000
-	suffix := 1
 
+	suffixes := []int{0, 2, 3, 30, 40, 50, 81}
+	suffix := suffixes[rand.Intn(len(suffixes))]
+
+	// No complicated maths here, just brute force to add one to account until it passes the modulus check
 	for moduloCheck(bankCode, branch, account, suffix) != 0 {
 		account++
 	}
-	
+
 	b := BankAccount{}
 	b.SetBank(bank.Code)
 	b.SetBranch(branch)
@@ -52,12 +54,12 @@ func moduloCheck(bank int, branch int, account int, suffix int) int {
 	b.SetAccount(account)
 	b.SetSuffix(suffix)
 
-	mod := Modulo(bank)
+	mod := BankModulo(bank)
 	var cumulative int
 
 	for i, n := range CheckDigitWeighting(bank, account) {
 		cumulative += n * b.AccountNumber[i]
 	}
 
-	return cumulative % mod	
+	return cumulative % mod
 }
