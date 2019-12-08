@@ -10,6 +10,9 @@ type Bank struct {
 	Code int
 	Branches []BranchRange
 }
+func (b *Bank) FirstBranch() BranchRange {
+	return b.Branches[0]
+}
 
 
 func Banks() map[int]Bank {

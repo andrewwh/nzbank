@@ -3,19 +3,32 @@ package main
 import (
 	"fmt"
 	"math"
+	"errors"
 )
 
 type BankAccount struct {
 	AccountNumber [18]int
 }
-func (b *BankAccount) Init(number string) {
+func (b *BankAccount) Init(number string) error {
 	b.AccountNumber = [18]int{}
 
-	for i, v := range []byte(number[0: 18]) {
+	if len(number) != 16 {
+		return errors.New("Bank account must be 16 digits")
+	}
+
+	for i, v := range []byte(number[0: 13]) {
 		if v >= '0' && v <= '9' {
 			b.AccountNumber[i] = int(v - '0')
 		}
 	}
+
+	for i, v := range []byte(number[13: 16]) {
+		if v >= '0' && v <= '9' {
+			b.AccountNumber[15+i] = int(v - '0')
+		}
+	}	
+
+	return nil
 }
 func (b *BankAccount) SetBank(bank int) {
 	for i, v := range IntToArray(bank, make([]int, 2)) {
@@ -29,12 +42,12 @@ func (b *BankAccount) SetBranch(branch int) {
 }
 func (b *BankAccount) SetAccount(account int) {
 	for i, v := range IntToArray(account, make([]int, 7)) {
-		b.AccountNumber[i+5] = v
+		b.AccountNumber[i+6] = v
 	}
 }
 func (b *BankAccount) SetSuffix(suffix int) {
 	for i, v := range IntToArray(suffix, make([]int, 4)) {
-		b.AccountNumber[i+12] = v
+		b.AccountNumber[i+14] = v
 	}
 }
 func (b *BankAccount) GetBank() int {
@@ -60,8 +73,8 @@ func (b *BankAccount) GetSuffix() int {
 }
 func (b *BankAccount) GetAccount() int {
 	var account int
-	for i, n := range b.AccountNumber[6: 15] {
-		account += int(math.Pow(float64(10), float64(7-i))) * n
+	for i, n := range b.AccountNumber[6: 13] {
+		account += int(math.Pow(float64(10), float64(6-i))) * n
 	}
 	return account
 }
@@ -95,6 +108,10 @@ func (b *BankAccount) IsValidBranch() bool {
 
 	return false
 }
-func (b *BankAccount) ToString() string {
-	return fmt.Sprintf("%02d-%04d-%08d-%04d", b.GetBank(), b.GetBranch(), b.GetAccount(), b.GetSuffix())
+func (b *BankAccount) Print(formatted bool) string {
+	if formatted {
+		return fmt.Sprintf("%02d-%04d-%07d-%03d", b.GetBank(), b.GetBranch(), b.GetAccount(), b.GetSuffix())
+	}
+
+	return fmt.Sprintf("%02d%04d%07d%03d", b.GetBank(), b.GetBranch(), b.GetAccount(), b.GetSuffix())
 }
