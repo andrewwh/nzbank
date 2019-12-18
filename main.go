@@ -21,12 +21,12 @@ func main() {
 	flag.Parse()
 
 	if validate != "?" {
-		account := new(BankAccount)
-		if err := account.Init(validate); err != nil {
+		account, err := NewBankAccount(validate)
+
+		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)
 		}
-
 		isValid := account.IsValid()
 
 		if isValid {

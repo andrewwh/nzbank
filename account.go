@@ -7,28 +7,32 @@ import (
 )
 
 type BankAccount struct {
-	AccountNumber [18]int
+	AccountNumber []int
 }
-func (b *BankAccount) Init(number string) error {
-	b.AccountNumber = [18]int{}
+func NewBankAccount(number string) (*BankAccount, error) {
 
 	if len(number) != 16 {
-		return errors.New("Bank account must be 16 digits")
+		return nil, errors.New("Bank account must be 16 digits")
 	}
 
-	for i, v := range []byte(number[0: 13]) {
+	var digits = make([]int, 16)
+	for i, v := range []byte(number[0: 16]) {
 		if v >= '0' && v <= '9' {
-			b.AccountNumber[i] = int(v - '0')
+			digits[i] = int(v - '0')
 		}
 	}
 
-	for i, v := range []byte(number[13: 16]) {
-		if v >= '0' && v <= '9' {
-			b.AccountNumber[15+i] = int(v - '0')
-		}
-	}
+	acct := make([]int, 0)
 
-	return nil
+	acct = append(acct, digits[0:6]...)
+	acct = append(acct, 0)
+	acct = append(acct, digits[6:13]...)
+	acct = append(acct, 0)
+	acct = append(acct, digits[13:]...)
+
+	return &BankAccount{
+			AccountNumber: acct,
+		}, nil
 }
 func (b *BankAccount) SetBank(bank int) {
 	for i, v := range IntToArray(bank, make([]int, 2)) {
@@ -42,7 +46,7 @@ func (b *BankAccount) SetBranch(branch int) {
 }
 func (b *BankAccount) SetAccount(account int) {
 	for i, v := range IntToArray(account, make([]int, 7)) {
-		b.AccountNumber[i+6] = v
+		b.AccountNumber[i+7] = v
 	}
 }
 func (b *BankAccount) SetSuffix(suffix int) {
@@ -73,7 +77,7 @@ func (b *BankAccount) GetSuffix() int {
 }
 func (b *BankAccount) GetAccount() int {
 	var account int
-	for i, n := range b.AccountNumber[6: 13] {
+	for i, n := range b.AccountNumber[7: 14] {
 		account += int(math.Pow(float64(10), float64(6-i))) * n
 	}
 	return account

@@ -48,7 +48,7 @@ var Banks = map[int]Bank{
 			Name:"NAB",
 			Code: 8,
 			Branches: []BranchRange{
-						BranchRange{Min: 0, Max: 9999},
+						BranchRange{Min: 6500, Max: 6599},
 					},
 		},
 		10: Bank{
@@ -156,6 +156,13 @@ var Banks = map[int]Bank{
 						BranchRange{Min: 4300, Max: 4349},
 					},
 		},
+		29: Bank{
+			Name:"United Bank",
+			Code: 29,
+			Branches: []BranchRange{
+						BranchRange{Min: 2150, Max: 2299},
+					},
+		},		
 		25: Bank{
 			Name:"Countrywide",
 			Code: 25,

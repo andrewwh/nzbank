@@ -28,7 +28,7 @@ func RandomBank(bankCode int) BankAccount {
 	branch := rand.Intn(first.Max - first.Min) + first.Min
 
 	rand.Seed(time.Now().UTC().UnixNano())
-	account := rand.Intn(99999999 - 990000) + 990000
+	account := rand.Intn(9999999 - 1000000) + 1000000
 
 	suffixes := []int{0, 2, 3, 30, 40, 50, 81}
 	suffix := suffixes[rand.Intn(len(suffixes))]
@@ -38,7 +38,9 @@ func RandomBank(bankCode int) BankAccount {
 		account++
 	}
 
-	b := BankAccount{}
+	b := BankAccount{
+		AccountNumber: []int{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	}
 	b.SetBank(bank.Code)
 	b.SetBranch(branch)
 	b.SetAccount(account)
@@ -48,7 +50,9 @@ func RandomBank(bankCode int) BankAccount {
 }
 
 func moduloCheck(bank int, branch int, account int, suffix int) int {
-	b := new(BankAccount)
+	b := BankAccount{
+		AccountNumber: []int{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	}
 	b.SetBank(bank)
 	b.SetBranch(branch)
 	b.SetAccount(account)
